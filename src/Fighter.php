@@ -2,7 +2,7 @@
 
 namespace App;
 
-class Fighter
+abstract class Fighter
 {
     public const MAX_LIFE = 100;
 
@@ -14,6 +14,8 @@ class Fighter
     private int $x;
     private int $y;
     protected float $range = 1;
+
+    protected int $experience = 1000;
 
     public function __construct(
         string $name,
@@ -100,7 +102,7 @@ class Fighter
      */
     public function getStrength(): int
     {
-        return $this->strength;
+        return $this->strength * Level::calculate($this->getExperience());
     }
 
     /**
@@ -117,7 +119,7 @@ class Fighter
      */
     public function getDexterity(): int
     {
-        return $this->dexterity;
+        return $this->dexterity * Level::calculate($this->getExperience());
     }
 
     /**
@@ -167,5 +169,25 @@ class Fighter
     public function getRange(): float
     {
         return $this->range;
+    }
+
+    /**
+     * Get the value of experience
+     */ 
+    public function getExperience()
+    {
+        return $this->experience;
+    }
+
+    /**
+     * Set the value of experience
+     *
+     * @return  self
+     */ 
+    public function setExperience($experience)
+    {
+        $this->experience = $experience;
+
+        return $this;
     }
 }
