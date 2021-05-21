@@ -29,7 +29,7 @@ abstract class Fighter
         $this->image = $image;
     }
 
-    
+
     public function getDamage(): int
     {
         $damage = $this->getStrength();
@@ -133,7 +133,7 @@ abstract class Fighter
 
     /**
      * Get the value of x
-     */ 
+     */
     public function getX(): int
     {
         return $this->x;
@@ -141,7 +141,7 @@ abstract class Fighter
 
     /**
      * Set the value of x
-     */ 
+     */
     public function setX($x): void
     {
         $this->x = $x;
@@ -149,7 +149,7 @@ abstract class Fighter
 
     /**
      * Get the value of y
-     */ 
+     */
     public function getY(): int
     {
         return $this->y;
@@ -157,7 +157,7 @@ abstract class Fighter
 
     /**
      * Set the value of y
-    */ 
+     */
     public function setY($y): void
     {
         $this->y = $y;
@@ -165,7 +165,7 @@ abstract class Fighter
 
     /**
      * Get the value of range
-     */ 
+     */
     public function getRange(): float
     {
         return $this->range;
@@ -173,7 +173,7 @@ abstract class Fighter
 
     /**
      * Get the value of experience
-     */ 
+     */
     public function getExperience()
     {
         return $this->experience;
@@ -183,7 +183,7 @@ abstract class Fighter
      * Set the value of experience
      *
      * @return  self
-     */ 
+     */
     public function setExperience($experience)
     {
         $this->experience = $experience;
