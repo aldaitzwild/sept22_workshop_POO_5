@@ -2,12 +2,15 @@
 
 require '../vendor/autoload.php';
 
-
 use App\Arena;
+use App\Grass;
 use App\Shield;
 use App\Weapon;
 use App\Hero;
+use App\Bush;
+use App\Hind;
 use App\Monster;
+use App\Water;
 
 /** ⛔ Ne pas modifier ⛔ **/
 session_start();
@@ -20,32 +23,107 @@ $arena = $_SESSION['arena'] ?? null;
 
 /** initialisation **/
 if (!$arena instanceof Arena) {
-    $heracles = new Hero('Heracles', 30, 6, 'heracles.svg');
-    $horse1 = new Monster('Mare 1', 25, 12, 'horse.svg');
-    $horse2 = new Monster('Mare 2', 25, 12, 'horse.svg');
-    $horse3 = new Monster('Mare 3', 25, 12, 'horse.svg');
-    $horse4 = new Monster('Mare 4', 25, 12, 'horse.svg');
-    
-    $arena = new Arena($heracles, [$horse1, $horse2, $horse3, $horse4]);
-    $heracles->setX(0);
-    $heracles->setY(0);
-    $horse1->setX(3);
-    $horse1->setY(2);
-    $horse2->setX(3);
-    $horse2->setY(3);
-    $horse3->setX(4);
-    $horse3->setY(3); 
-    $horse4->setX(6);
-    $horse4->setY(6);
+    $heracles = new Hero('Heracles', 30, 6, 0, 0);
+    $hind = new Hind('Ceryneian Hind', 25, 10, 9, 6);
 
     $sword = new Weapon(10);
-    $bow = new Weapon(8, 5, 'bow.svg');
-
     $heracles->setWeapon($sword);
-
     $shield = new Shield();
     $heracles->setShield($shield);
+
+    $tiles = $elements = [];
+    $waters = $bushes = $grasses = [];
+    if (class_exists(Grass::class)) {
+        $grasses = [
+            new Grass(0, 0),
+            new Grass(1, 0),
+            new Grass(8, 0),
+            new Grass(9, 0),
+            new Grass(0, 1),
+            new Grass(1, 1),
+            new Grass(8, 1),
+            new Grass(9, 1),
+            new Grass(0, 2),
+            new Grass(1, 2),
+            new Grass(7, 2),
+            new Grass(8, 2),
+            new Grass(0, 3),
+            new Grass(1, 3),
+            new Grass(2, 3),
+            new Grass(3, 3),
+            new Grass(4, 3),
+            new Grass(7, 3),
+            new Grass(8, 3),
+            new Grass(0, 4),
+            new Grass(1, 4),
+            new Grass(0, 5),
+            new Grass(0, 6),
+        ];
+    }
+    if (class_exists(Water::class)) {
+        $waters = [
+            new Water(2, 0),
+            new Water(3, 0),
+            new Water(4, 0),
+            new Water(5, 0),
+            new Water(6, 0), 
+            new Water(7, 0), 
+            new Water(2, 1),
+            new Water(3, 1),
+            new Water(4, 1),
+            new Water(5, 1),
+            new Water(6, 1),
+            new Water(7, 1),
+            new Water(3, 1),
+            new Water(4, 1),
+            new Water(3, 2),
+            new Water(4, 2),
+            new Water(5, 2),
+            new Water(6, 2),
+            new Water(5, 3),
+            new Water(6, 3),
+            new Water(6, 4),
+            new Water(6, 5),
+            new Water(7, 5),
+            new Water(7, 6),
+            new Water(0, 8),
+            new Water(1, 8),
+            new Water(0, 7),
+            new Water(0, 9),
+            new Water(1, 9),
+            new Water(2, 9),
+            new Water(3, 9),
+            new Water(4, 9),
+            new Water(5, 9),
+            new Water(7, 4),
+            new Water(8, 4),
+            new Water(8, 4),
+            new Water(8, 5),
+            new Water(9, 5),
+
+        ];
+    }
+    if (class_exists(Bush::class)) {
+        $bushes = [
+            new Bush(2, 2),
+            new Bush(4, 4),
+            new Bush(3, 7),
+            new Bush(2, 5),
+            new Bush(6, 9),
+            new Bush(7, 9),
+            new Bush(7, 8),
+            new Bush(7, 7),
+            new Bush(6, 8),
+            new Bush(9, 2),
+            new Bush(9, 3),
+        ];
+    }
+
+    $tiles = [...$waters, ...$grasses, ...$bushes];
+
+    $arena = new Arena($heracles, [$hind], $tiles);
 }
+
 $_SESSION['arena'] = $arena;
 
 try {
@@ -54,7 +132,8 @@ try {
     }
     if (isset($_GET['fight']) && method_exists($arena, 'battle')) {
         $arena->battle($_GET['fight']);
-    }
+    }  
+
 } catch (Exception $exception) {
     $error = $exception->getMessage();
 }
@@ -68,13 +147,13 @@ try {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heracles Labours</title>
+    <title>Heracles Labours #5</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
     <header>
-        <h1>Heracles vs Mares of Diomedes</h1>
+        <h1>Heracles vs Ceryneian Hind</h1>
         <a class="btn reset" href="?reset=reset">Reset</a>
     </header>
     <main>
@@ -86,7 +165,7 @@ try {
                         <img src="<?= $arena->getHero()->getImage() ?>" alt="heracles">
                         <figcaption><?= $arena->getHero()->getName() ?></figcaption>
                     </figure>
-                    <progress class="life" max="100"  value="<?= $arena->getHero()->getLife() ?>"></progress>
+                    <progress class="life" max="100" value="<?= $arena->getHero()->getLife() ?>"></progress>
                 </div>
             </a>
             <?php foreach ($arena->getMonsters() as $monster) : ?>

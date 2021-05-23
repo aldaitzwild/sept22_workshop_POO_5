@@ -1,68 +1,80 @@
-# Travaux d'Héraclès #4 : les juments de Diomède
+# Travaux d'Héraclès #5 : la biche de Cérynie
  
 Prérequis : cloner ce *repository*.
 
 Fais un `composer install`
 
-Le travail continue pour Héraclès. Il doit maintenant venir à bout des juments carnivores du roi Diomède.
+La prochaine mission d'Héraclès est de capturer la fantastique biche de Cérynie, sans lui faire aucun mal au risque de provoquer la colère d'Artémis.
 
-Pour ce nouvel atelier, tu reprends là encore où tu t'étais arrêté à l'étape précédente. Tu as un héros qui peut se déplacer et une gestion de la portée pour tes attaques. 
+Pour ce nouvel atelier, tu reprends là encore où tu t'étais arrêté à l'étape précédente. Le héros peut se déplacer et attaquer les monstres sur la carte.
 
-> Tu noteras que quelques modifications ont été apportées ici, car le déroulement d'une partie se fait maintenant sur plusieurs tours. À chaque tour, tu pourras te déplacer ou attaquer afin de rendre la partie un peu plus intéractive. Les sessions sont utilisées pour persister les informations d'un tour à l'autre, mais tu n'as pas à te soucier de cela, concentre toi sur tes classes. Tu ne devrais pas non plus avoir à modifier le fichier *index.php*, l'arène, le héros et les monstres sont déjà instanciés.
+## C'est la tuile
 
-> Tu remarqueras aussi un bouton "Reset" en haut à droite qui te permets de "recommencer" une partie en réinitialisant le jeu.
+La carte justement, elle est un peu triste. Tu te trouves sur la colline de Cérynie, entouré d'herbes, d'arbres et de cours d'eau. Il va falloir représenter tout cela.
 
-## Monsters, Hero and Fighters
-Dans l'atelier précédent, tu as créé les classes `Hero` et `Monster` qui étendent tous deux `Fighter`. Cela n'a maintenant plus de sens d'instancier directement un objet de la classe `Fighter`. Un combattant est un concept abstrait, qui englobe les héros et les monstres qui eux sont plus concrets et ont leurs propre spécificités. Pour empêcher aux utilisateurs de ces classes d'instancier un objet `Fighter` (et donc les obliger à passer par une des deux classes filles), il faut que tu rendes la classe `Fighter` abstraite. 
+Commence par créer une nouvelle classe `Tile`. Une tuile va avoir des coordonnées `$x` et `$y` ainsi qu'une `$image` pour la représenter (avec les *getters* et *setters* correspondants. 
+Tu remarqueras que la classe `Fighter` possède également ces mêmes méthodes. C'est logique puisque les tuiles ou les combattants doivent pouvoir être affichés et positionnés sur une carte (arène). Notre arène manipule donc des objets cartographiables et qui **doivent** impérativement l'être. Pous s'en assurer, créé une interface "Mappable" contenant ces 6 méthodes, et fait en sorte que `Tile` et `Fighter` l'implémente (attention pour `getImage()` n'oublie pas de concaténer le chemin complet vers l'image).
 
-## Un peu de déplacement
-Les `Fighter` peuvent déjà se déplacer sur la carte grâce aux fonctions `setX()` et `setY()`. Mais cela n'est pas très pratique à manipuler et ne propose pas un déplacement réaliste puisqu'il est possible de "téléporter" le combattant n'importe où. 
-Tu va créer maintenant une fonction `move()` qui permettra de déplacer un `Fighter` d'une case à la fois, dans une direction donnée (nord, sud, est ou ouest).
+> Rappel : une interface ne contient que des signatures de méthodes (pense au typages), tu ne dois donc y mettre ni propriétés, ni "corps" pour les méthodes.
 
-Créé cette méthode `move(Fighter $fighter, string $direction)` dans la classe `Arena`. 
+Dans `Tile` ajoute un constructeur permettant de spécifier les coordonnées de la tuiles en x et y.
 
-Le paramètre `$direction` prendra obligatoire une des quatre valeurs `"N", "S", "W" ou "E"`. En fonction de la "lettre" récupérée, les coordonnées du combattant devront être modifiées en conséquence.
-> Par exemple, un mouvement vers le sud incrémente `$y`, un mouvement vers l'ouest décrémente `$x`, etc.
+Sur ta carte, tu vas avoir plusieurs type de tuiles représentant les différent éléments du paysage (herbe, eau, arbre...), chacune ayant ses propres spécifités (traversable, modifiable...). Tu ne seras jamais amené à instancier directement une classe `Tile`, mais toujours quelques chose de plus précis. Tu l'auras reconnus, nous avons affaire ici à une classe abstaite ! Modifie `Tile` en conséquence.
 
-De plus, fait en sorte qu'il soit impossible de "sortir" de la carte, mais également impossible de se déplacer sur une case déjà occupée par un autre `Fighter`. Pour t'aider à construire cette méthode, procède de la sorte : 
-- récupère les coordonnées actuelle du `Fighter` passé en paramètre
-- en fonction de la direction, calcule les coordonnées où le personnage *souhaite* se déplacer (mais ne le déplace pas encore). 
-- vérifie que ces coordonnées de destination correspondent à une case accessible (dans la carte et libre). 
-- si le déplacement n'est pas autorisé, lance une Exception (avec idéalement deux messages différents pour une case occupée ou une sortie de carte). Dans *index.php* le code qui permet de captures les exceptions (`try/catch`) est déjà implémenté et si une exception est levée, elle s'affichera dans un bloc d'erreur en haut à droite de la page.
-- si le déplacement est valide, modifie les coordonées du `Fighter` pour qu'il se déplace à sa destination.
+Tu vas créer autant de nouvelle classe que de type de tuile. Créé pour commencer une classe `Grass` et une `Water` toutes deux héritant de `Tile`. Pour le moment, spécifie uniquement une valeur par défaut à la propriété `$image` (à passer en *protected* par la même occasion), respectivement *grass.png* et *water.jpg*
 
-> Pour "tester" le déplacement, tu peux simplement utiliser les touches de ton clavier. Un peu de JS est utilisé pour détecter si tu utilises ces touches, et si c'est le cas, va exécuter la méthode `move()`. N'hésite pas à regarder comment le code est fait si cela t'intéresse, mais ne le modifie pas. 
+Dans la classe `Arena`, ajoute une propriété `$tiles` de type *array*. Ajoute également un troisième paramètre `$tiles` optionnel, dans le constructeur.
 
-Ton personnage se déplace, c'est bien ! Normalement, la notion de portée (en fonction de l'arme que le héros porte) est toujours fonctionnelle et les monstres doivent se griser ou non en fonction de la distance. Tu peux t'amuser à changer l'arme d'Héraclès si tu veux.
+Actualise la page, tu devrais voir apparaître de l'herbe et de l'eau.
 
-## Que la bataille commence !
+# Méfie toi de l'eau qui dort
 
-Les juments de Diomède sont là, devant toi, les naseaux fumants. Tu peux te déplacer autour, te mettre hors de portée de leur dents tranchantes, avides de chair fraîche. C'est le moment de passer à l'attaque !
+Si Héraclès peut se déplacer sans problème sur l'herbe (ou sur un sol sans tuile définie), il ne peut pas se déplacer sur l'eau.
 
-Sur l'arène, le troupeau est constitué de quatre juments qu'il va falloir combattre. Mais comment gérer qui attaque qui ? Il y a bien une méthode `fight()` dans `Fighter`, mais un `Fighter` n'a pas connaissance directement des autres combattants, c'est là encore la classe `Arena` qui a cette information. Tu vas donc implémenter une méthode `battle()` directement dans `Arena`. Il est possible d'implémenter une bataille de plusieurs façon, il faut donc choisir des règles. Voici comment le *gameplay* va se dérouler pour ton jeu :
-- le `Hero` choisi sur la carte quel monstre il souhaite attaquer en cliquant dessus. Le clic sur le monstre est déjà implémenté, et un `id` correspondant au monstre choisi est envoyé. Ta méthode `battle(int $id)` devra donc prendre un unique paramètre `$id` qui correspond à l'index du monstre dans le tableau `$monsters` de `Arena`.
-- si le monstre est à portée du héros (utilise la méthode `touchable()` pour le vérifier), il est attaqué et subit les points de dégâts correspondant. La méthode `fight()` du héros est alors utilisée. Si le monstre n'est pas à portée du héros, lance une Exception.
-- ensuite, si le monstre est à portée (utilise à nouveau `touchable()` mais du point de vue du monstre ciblé), ce dernier réplique et attaque à son tour le héros. Si le héros n'est pas à portée du monstre, lance une Exception. 
+Commence par ajouter une propriété `$isThrowable` (booléen *true* par défaut) à `Tile`.
 
-## Boucherie chevaline
+Dans la classe `Water`, passe `$isThrowable` à *false*;
 
-Héraclès doit venir à bout des monstres, il peut attaquer et faire des dégâts. Pour le moment, si un monstre est "vaincu" (points de vie <0), il reste sur la carte et est toujours attaquable. Gérons ce cas de figure, toujours dans la méthode `battle()` 
-- à l'aide de la méthode `isAlive()` présente dans `Fighter`, teste après une attaque du héros, si le monstre attaqué est toujours en vie. Si oui la méthode continue et le monstre attaque alors Héraclès. 
-- Mais si le monstre est mort suite à l'attaque du héros, fais en sorte d'enlever le monstre du tableau `$monsters`. De ce fait, il n'attaquera pas et doit également "disparaître" de la carte, la case où il se trouvait devenant donc libre.
+Maintenant, tu vas modifier légèrement le comportement de la méthode `move()` d'`Arena`.
+1. Créer une méthode privée `getTile($x, $y)` permettant de récupérer une tuile en fonction de ses coordonéés
+2. Récupère la tuile correspondant à la destination potentielle du héros.
+3. Vérifie que la tuile est traversable grace à la nouvelle propriété `$isThrowable`.
+4. Si oui, le déplacement continue, si non lance une exception.
 
-> La mort du héros n'étant pas envisageable, cela ne sera pas implémenté ! De plus, si tous les monstres de l'arène sont vaincus, il ne se passera rien non plus. Mais tu es libre d'implémenter le code pour ces différents cas de figure en BONUS ;-)
+# Remplissage de la carte
 
-## Expérience
+Ajoute une nouvelle classe `Bush`, fille de `Tile`, non traversable et affichant *bush.png*.
 
-Lorsque le héros terrasse un ennemi, il doit gagner de l'expérience. Au bout d'un certain nombre de points d'expérience accumulés, il gagne un niveau. Ce type de mécanisme peut là encore être implémenté de bien des manières différentes. Voici ce que tu devras faire ici :
-- Ajoute une propriété `$experience` dans la classe `Fighter`, *integer* avec la valeur 1000 par défaut pour le héro, et 500 pour les monstres.
-- Lorsqu'un monstre meurt, en plus de disparaître de la carte, le nombre de points d'expérience du monstre sera ajouté à l'expérience du héros.
-- Le niveau du héros sera automatiquement déduit de la quantité de point d'XP qu'il possède. Ce calcul de niveau n'est pas vraiment lié à l'arène. Il pourrait être relié au `Fighter` mais nous allons essayer de respecter un peu mieux le premier principe SOLID (Single Responsability Principle), qui incite à limiter la responsabilité d'une classe et éviter d'avoir des classes qui deviennent énormes et fourre-tout. 
-- Commence par créer une nouvelle classe `Level` qui contiendra une unique méthode `calculate(int $experience)`. La méthode renverra le niveau en fonction d'un paramètre expérience, selon la formule suivante: `XP / 1000, arrondi à l'entier supérieur = LEVEL ` donc à 1500 points d'XP, le héros est au niveau 2 ; à 6300 points, le héros est au niveau 7, *etc*. 
-- La façon de calculer le niveau découle directement du nombre de point d'XP et ce ferait de la même pour n'importe quel combattant. Ainsi, la méthode `calculate()` a le comportement d'une fonction PHP classique, tu peux ici l'utiliser de manière *statique*. Ajoute le mot clé `static` devant ta méthode, et tu l'utiliseras ainsi `Level::calculate($xp)` sans avoir besoin d'instancier un objet de type `Level`.
+Réinitialise le jeu, tu vois que la carte commence à bien se remplir !
 
-> Tue un monstre ou deux, et observe ton panneau d'inventaire. Ton nombre de points d'expérience et ton niveau doivent changer.
+# Biche, ô ma biche
 
-- Enfin, pour que le niveau serve à quelque chose dans le *gameplay*, fait en sorte que `getStrength()` et `getDexterity()` retourne la force et la dextérité, multiplié par le niveau du combattant. Ainsi, si Héraclès à une force de base à 20, au niveau 1 `getStength()` renverra 20, puis 40 au niveau 2, *etc.* 
+La biche est innaccessible cachée derrière tous ces arbustres. Héraclès se cache, à l'affut, attendant qu'elle sorte de là. Pour cela, il faudrait déjà que celle-ci puisse bouger ! Pour cela, ajoutons un peu de code à la méthode `move()` d'`Arena`.
 
-Bravo, ce nouvel atelier est maintenant terminé, notre héros peut aller se reposer un peu avant sa prochaine mission !
+1. Pour commencer, simplifions un peu l'instanciation des monstres en ajouts `$x` et `$y` comme paramètres dans le constructeur de `Fighter`. De plus, enlève `$image` des paramètres (car il ya déjà une valeur par défaut). Cependant pour que l'image du `Hero` s'affiche toujours, ajoute une propriété `$image` pour indiquer l'images d'Héraclès à afficher (attention à utiliser la bonne visiblité pour la propriété).
+
+2. Modifie en conséquence *index.php*. Tu n'as plus besoin d'utilise les *setters* pour $x et $y ni de préciser l'image pour Heracles.
+
+3. La biche va avoir un comportement un peu particulier, notamment car elle va pouvoir bouger. Crée un class `Hind` (pour Biche) fille de `Monster`. Ajoute là encore une propriété `$image` avec pour valeur *hind.svg*.
+
+> Réflechissons un instant à l'interface `Mappable`. Celle-ci contient les getters ET les setters pour les coordonnées. Or, pour afficher un élément sur une carte, seuls les *getters* sont réellement utilies. Par contre, les *setters* seront nécessaires pour modifier ces coordonnéesen dehors de la position initiale à l'instanciation. C'est ce qui arrive si l'élément peut bouger. Tachons de respecter le **I** de SOLID (Interface ségregation).
+
+5. Créer une nouvelle interface `Movable` et tu vas y transférer uniquement `setX()` et `setY()`. Attention cependant, un élément Movable est forcément Mappable ! Donc Movable doit également étendre Mappable. Fais en sorte que `Hero` et `Hind` l'implémente. Cela signifie que seuls les Héraclès et la biche peuvent bouger, pas d'autres monstres éventuels. 
+
+6. A chaque fois que le héros a fini de bouger, les monstres ayant la capacité de bouger vont le faire. Dans la méthode `move()`, une fois le héro déplacé (donc après l'utilisation de `setX()` et `setY()`), boucle sur les monstres implémentant `Movable`. Pour chacun de ces monstres, choisi une direction aléatoirement (appuie toi sur la fonction PHP array_rand() et la constantes DIRECTIONS), puis bouge le monstre dans la direction en réutilisant la méthode `move()`. Ainsi, toutes les vérifications déjà réalisée pour le déplacement du héros (limites de la carte, case Throwable, etc.) sont réutilisées !
+
+7. Dans les paramètres de `move()` type plutot avec Movable que Fighter, afin de s'assurer justement que le mouvement puisse s'effectuer.
+
+8. Ici, `move()` est lancée par le Hero une première fois, puis par tous les monstres. Donc à chaque mouvement d'un monstre, une nouvelle boucle est effectuée sur les monstres, *etc.* entraînant un comportement anormal. Pour éviter cela, il faut seulement s'assurer que la boucle sur les monstres se fasses uniquement dans le cas où ce qui est déplacé est une instance de `Hero`.
+
+> Ajoute un Monster à la carte en plus de Hind, si tout s'est bien passé, tu verras que seul la biche bouge !
+
+Dernier point, notre biche bouge mais est bloquée derrière les buissons. Modifions cela. Si Héraclès ne sait comment traverser les épineux buissons de la forêt, cela n'est pas un problème pour la biche. Nous allons donc faire en sorte que la tuile Bush soit non traversable, **sauf** pour un objet Hind ! 
+
+Pour cela, modifie la méthode getIsThrowable de Tile, pour qu'elle prenne en paramètre une instance de Movable. Dans Arena, lorsque tu utilise getIsThrowable(), passe en paramètre ce qui est en train d'essayer de bouger sur cette tuile.
+
+Dans Bush maitenant, redéfini getIsThrowable() afin que la fonctionne revoie $isThrowable (qui doit être à *false*) mais qu'il renvoie aussi *true* si et seulement si $movable est une instance de Hind. En d'autres terme, la tuile n'est pas traversable sauf si c'est une biche qui essaie ! 
+
+Effectue plusieurs mouvements, tu vas voir que la biche devrait finir par traverser les buissons, c'est le moment tant attendu, attrape là !
+
+> Nous ne chercherons pas à implémenter le fait qu'Héraclès capture effectivement la Biche car cela demanderait pas mal d'efforts supplémentaires, mais comme toujours, si tu souhaites essayer, n'hésite pas !
