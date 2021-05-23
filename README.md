@@ -4,13 +4,13 @@ Prérequis : cloner ce *repository*.
 
 Fais un `composer install`
 
-La prochaine mission d'Héraclès est de capturer la fantastique biche de Cérynie, sans lui faire aucun mal au risque de provoquer la colère d'Artémis.
+La prochaine mission d'Héraclès est de capturer la fantastique biche de Cérynie, mais sans lui faire aucun mal au risque de provoquer la colère d'Artémis.
 
 Pour ce nouvel atelier, tu reprends là encore où tu t'étais arrêté à l'étape précédente. Le héros peut se déplacer et attaquer les monstres sur la carte.
 
 ## C'est la tuile
 
-La carte justement, elle est un peu triste. Tu te trouves sur la colline de Cérynie, entouré d'herbes, d'arbres et de cours d'eau. Il va falloir représenter tout cela.
+La carte justement, elle est un peu triste. Tu te trouves sur la colline de Cérynie, entouré d'herbes, d'arbustes et de cours d'eau. Il va falloir représenter tout cela.
 
 Commence par créer une nouvelle classe `Tile`. Une tuile va avoir des coordonnées `$x` et `$y` ainsi qu'une `$image` pour la représenter (avec les *getters* et *setters* correspondants. 
 Tu remarqueras que la classe `Fighter` possède également ces mêmes méthodes. C'est logique puisque les tuiles ou les combattants doivent pouvoir être affichés et positionnés sur une carte (arène). Notre arène manipule donc des objets cartographiables et qui **doivent** impérativement l'être. Pous s'en assurer, créé une interface "Mappable" contenant ces 6 méthodes, et fait en sorte que `Tile` et `Fighter` l'implémente (attention pour `getImage()` n'oublie pas de concaténer le chemin complet vers l'image).
@@ -49,7 +49,7 @@ Réinitialise le jeu, tu vois que la carte commence à bien se remplir !
 
 # Biche, ô ma biche
 
-La biche est innaccessible cachée derrière tous ces arbustres. Héraclès se cache, à l'affut, attendant qu'elle sorte de là. Pour cela, il faudrait déjà que celle-ci puisse bouger ! Pour cela, ajoutons un peu de code à la méthode `move()` d'`Arena`.
+La biche est innaccessible cachée derrière tous ces arbustes. Héraclès se cache, à l'affut, attendant qu'elle sorte de là. Pour cela, il faudrait déjà que celle-ci puisse bouger ! Pour cela, ajoutons un peu de code à la méthode `move()` d'`Arena`.
 
 1. Pour commencer, simplifions un peu l'instanciation des monstres en ajouts `$x` et `$y` comme paramètres dans le constructeur de `Fighter`. De plus, enlève `$image` des paramètres (car il ya déjà une valeur par défaut). Cependant pour que l'image du `Hero` s'affiche toujours, ajoute une propriété `$image` pour indiquer l'images d'Héraclès à afficher (attention à utiliser la bonne visiblité pour la propriété).
 
