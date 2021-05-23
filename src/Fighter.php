@@ -2,31 +2,28 @@
 
 namespace App;
 
+use App\Mappable;
+
 abstract class Fighter
 {
     public const MAX_LIFE = 100;
 
     private string $name;
-    private int $strength;
-    private int $dexterity;
-    private string $image = 'fighter.svg';
+    private int $strength = 10;
+    private int $dexterity = 5;
+    protected string $image = 'fighter.svg';
     private int $life = self::MAX_LIFE;
-    private int $x;
-    private int $y;
+    protected int $x;
+    protected int $y;
     protected float $range = 1;
 
     protected int $experience = 1000;
 
-    public function __construct(
-        string $name,
-        int $strength = 10,
-        int $dexterity = 5,
-        string $image = 'fighter.svg'
-    ) {
+    public function __construct(string $name, int $x, int $y)
+    {
         $this->name = $name;
-        $this->strength = $strength;
-        $this->dexterity = $dexterity;
-        $this->image = $image;
+        $this->x = $x;
+        $this->y = $y;        
     }
 
 
@@ -60,6 +57,14 @@ abstract class Fighter
     public function getImage(): string
     {
         return 'assets/images/' . $this->image;
+    }   
+    
+    /**
+     * Get the value of image
+     */
+    public function setImage(string $image)
+    {
+        $this->image = $image;
     }
 
 
@@ -142,7 +147,7 @@ abstract class Fighter
     /**
      * Set the value of x
      */
-    public function setX($x): void
+    public function setX(int $x): void
     {
         $this->x = $x;
     }
@@ -158,7 +163,7 @@ abstract class Fighter
     /**
      * Set the value of y
      */
-    public function setY($y): void
+    public function setY(int $y): void
     {
         $this->y = $y;
     }

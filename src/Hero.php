@@ -9,6 +9,9 @@ class Hero extends Fighter
 {
     private ?Weapon $weapon = null;
     private ?Shield $shield = null;
+    protected int $strength = 20;
+    protected int $dexterity = 6;
+    protected string $image = 'heracles.svg';
 
     public function getDamage(): int
     {

@@ -23,13 +23,9 @@ $arena = $_SESSION['arena'] ?? null;
 
 /** initialisation **/
 if (!$arena instanceof Arena) {
-    $heracles = new Hero('Heracles', 30, 6, 'heracles.svg');
-    $hind = new Monster('Ceryneian Hind', 25, 10, 'hind.svg');
-
-    $heracles->setX(0);
-    $heracles->setY(0);
-    $hind->setX(9);
-    $hind->setY(6);
+    $heracles = new Hero('Heracles', 0, 0);
+    $hind = new Monster('Ceryneian Hind', 9, 6);
+    $hind->setImage('hind.svg');
     
     $sword = new Weapon(10);
     $heracles->setWeapon($sword);
