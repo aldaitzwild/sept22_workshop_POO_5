@@ -8,11 +8,13 @@ if (isset($arena)) : ?>
         <?php for ($y = 0; $y < $arena->getSize(); $y++) : ?>
             <?php for ($x = 0; $x < $arena->getSize(); $x++) : ?>
                 <div>
-                    <?php foreach ($arena->getTiles() as $id => $tile) : ?>
-                        <?php if ($tile->getX() === $x && $tile->getY() === $y) : ?>
+                    <?php if (method_exists($arena, 'getTiles')) : ?>
+                        <?php foreach ($arena->getTiles() as $id => $tile) : ?>
+                            <?php if ($tile->getX() === $x && $tile->getY() === $y) : ?>
                                 <img class="tile" src="<?= $tile->getImage(); ?>" alt="">
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
 
                     <?php foreach ($arena->getMonsters() as $id => $fighter) : ?>
                         <?php if ($fighter->getX() === $x && $fighter->getY() === $y) : ?>
