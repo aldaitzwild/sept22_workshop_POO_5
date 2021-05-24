@@ -12,15 +12,15 @@ Pour ce nouvel atelier, tu reprends là encore où tu t'étais arrêté à l'ét
 
 ## C'est la tuile
 
-La carte justement, elle est un peu triste. Tu te trouves sur la colline de Cérynie, entouré d'herbes, d'arbustes et de cours d'eau. Il va falloir représenter tout cela.
+La carte justement, elle est un peu triste. Tu te trouves sur la colline de Cérynie, entourée d'herbes, d'arbustes et de cours d'eau. Il va falloir représenter tout cela.
 
 Commence par créer une nouvelle classe `Tile`. Une tuile (une "case" sur la carte) va avoir des coordonnées `$x` et `$y` ainsi qu'une `$image` pour la représenter (avec les *getters* et *setters* correspondants.)
 
-Tu remarqueras que la classe `Fighter` possède également ces mêmes méthodes. C'est logique puisque les tuiles ou les combattants doivent pouvoir être affichés et positionnés sur une carte (arène). Notre arène manipule donc des objets cartographiables et qui **doivent** impérativement l'être. Pous s'en assurer, tu vas créer une interface "Mappable" contenant ces 6 méthodes, et fait en sorte que `Tile` et `Fighter` l'implémente (attention pour `getImage()` n'oublie pas de concaténer le chemin complet vers l'image).
+Tu remarqueras que la classe `Fighter` possède également ces mêmes méthodes. C'est logique puisque les tuiles ou les combattants doivent pouvoir être affichés et positionnés sur une carte (arène). Notre arène manipule donc des objets cartographiables et qui **doivent** impérativement l'être. Pous s'en assurer, tu vas créer une interface "Mappable" contenant ces 6 méthodes, et faire en sorte que `Tile` et `Fighter` l'implémentent (attention pour `getImage()` n'oublie pas de concaténer le chemin complet vers l'image).
 
 > Rappel : une interface ne contient **que** des signatures de méthodes (pense au typages), tu ne dois donc y mettre ni propriétés, ni "corps" pour les méthodes.
 
-Dans `Tile` ajoute un constructeur permettant de spécifier les coordonnées de la tuiles en x et y au moment de l'instanciation. Mets également une chaîne vide par défaut pour `$image`;
+Dans `Tile` ajoute un constructeur permettant de spécifier les coordonnées de la tuile en x et y au moment de l'instanciation. Mets également une chaîne vide par défaut pour `$image`;
 
 Sur ta carte, tu vas avoir plusieurs type de tuiles représentant les différent éléments du paysage (herbe, eau...), chacune ayant ses propres spécifités (traversable ou non...). Tu ne seras jamais amené à instancier directement une classe `Tile`, mais toujours quelques chose de plus précis. Tu l'auras compris, nous avons affaire ici à une classe abstaite ! Modifie `Tile` en conséquence.
 
@@ -42,7 +42,7 @@ Maintenant, tu vas modifier légèrement le comportement de la méthode `move()`
 1. Commence par créer une méthode privée `getTile($x, $y)` permettant de récupérer une tuile en fonction de ses coordonéés (ou null si la case est vide).
 2. Dans `move()`, récupère la tuile correspondant à la destination potentielle du héros.
 3. Vérifie que la tuile est traversable grace à la nouvelle propriété `$isCrossable`.
-4. Si non lance une exception, si oui, le déplacement continu.
+4. Si non lance une exception, si oui, le déplacement continue.
 
 Teste sur la carte que le héros peut bien traverser l'herbe mais pas l'eau.
 
@@ -58,17 +58,17 @@ La biche est innaccessible cachée derrière tous ces arbustes. Héraclès reste
 
 La biche va être un monstre avec un comportement un peu particulier, notamment car elle va pouvoir bouger, ce qui n'est pas le cas des autre monstres. 
 
-> Remarque SOLID : Tu pourrais implémenter un comportement spécifique aux biches directement dans `Monster`. Cependant, notre héros à encore pas mal de bêtes à combattre et donc autant de spécificités, ce qui rendrait au final la classe `Monster` très chargée et certainement pleines de conditions spécifiques à tel ou tel sous-types de monstres.
+> Remarque SOLID : Tu pourrais implémenter un comportement spécifique aux biches directement dans `Monster`. Cependant, notre héros à encore pas mal de bêtes à combattre et donc autant de spécificités, ce qui rendrait au final la classe `Monster` très chargée et certainement pleine de conditions spécifiques à tel ou tel sous-type de monstres.
 >
-> Une autre solution est de ne pas toucher directement à `Monster`, et créer une classe `Hind` (pour Biche), fille de `Monster`, qui contiendra le code spécifique aux biches. A chaque nouveau type de monstre ayant une spécificité propre, tu ajoutes une nouvelle classe. Et il reste toujours possible d'instancier un monstre "de base" si tu le souhaites. C'est cela, le "Open/Close Principle de SOLID". Les classes, une fois définies, devraient rester "fermées" à toute modification (qui ne concernerait pas tous les objets de cette classe). S'il t'arrive de rencontrer un tel cas, la classe doit cependant être ouverte à une extension, tu dois pouvoir créer une classe fille facilement.
+> Une autre solution est de ne pas toucher directement à `Monster`, et de créer une classe `Hind` (pour Biche), fille de `Monster`, qui contiendra le code spécifique aux biches. À chaque nouveau type de monstre ayant une spécificité propre, tu ajoutes une nouvelle classe. Et il reste toujours possible d'instancier un monstre "de base" si tu le souhaites. C'est cela, le "Open/Close Principle" de SOLID. Les classes, une fois définies, devraient rester "fermées" à toute modification (qui ne concernerait pas tous les objets de cette classe). S'il t'arrive de rencontrer un tel cas, la classe doit cependant être ouverte à une extension, tu dois pouvoir créer une classe fille facilement.
 
 Dans ta nouvelle classe `Hind`, ajoute une propriété `$image` avec pour valeur *hind.svg*. 
 
 Dans le fichier *index.php*, modifie l'instanciation d'un `Monster` par un `Hind` et enlève le `setImage()` de la ligne suivante qui n'est plus nécessaire.
 
-> Remarque SOLID : réflechissons un instant à l'interface `Mappable`. Celle-ci contient les *getters* ET les *setters* pour les coordonnées. Or, pour afficher un élément sur une carte, seuls les *getters* sont réellement utilies. Par contre, les *setters* seront nécessaires pour modifier ces coordonnées. C'est ce qui arrive si l'élément peut bouger. Tachons de respecter le **I** de SOLID (Interface ségregation) qui a pour but d'éviter à des classes de devoir implémenter des méthodes qui lui seraient inutiles, en séparant ces méthodes dans différentes interfaces plus petites. C'est exactement le cas ici avec `Mappable`, car les `Tile` n'ont pas besoin de setX() et setY() mais sont obligés de l'implémenter car `Mappable` les contient.
+> Remarque SOLID : réflechissons un instant à l'interface `Mappable`. Celle-ci contient les *getters* ET les *setters* pour les coordonnées. Or, pour afficher un élément sur une carte, seuls les *getters* sont réellement utiles. Par contre, les *setters* seront nécessaires pour modifier ces coordonnées. C'est ce qui arrive si l'élément peut bouger. Tachons de respecter le **I** de SOLID (Interface segregation) qui a pour but d'éviter à des classes de devoir implémenter des méthodes qui lui seraient inutiles, en séparant ces méthodes dans différentes interfaces plus petites. C'est exactement le cas ici avec `Mappable`, car les `Tile` n'ont pas besoin de setX() et setY() mais sont obligés de l'implémenter car `Mappable` les contient.
 
-1. Créer une nouvelle interface `Movable` et tu vas y transférer uniquement `setX()` et `setY()`. Attention cependant, un élément `Movable` est forcément `Mappable` ! Donc `Movable` doit également étendre `Mappable` (le concept d'héritage existe aussi pour les interfaces). Fais en sorte que `Hero` et `Hind` l'implémente. Cela signifie que seuls les Héraclès et la biche peuvent bouger, pas d'autres monstres.
+1. Crée une nouvelle interface `Movable` et, tu vas y transférer uniquement `setX()` et `setY()`. Attention cependant, un élément `Movable` est forcément `Mappable` ! Donc `Movable` doit également étendre `Mappable` (le concept d'héritage existe aussi pour les interfaces). Fais en sorte que `Hero` et `Hind` l'implémentent. Cela signifie que seuls Héraclès et la biche peuvent bouger, pas d'autres monstres.
 
 2. À chaque fois que le héros a fini de bouger, les monstres ayant la capacité de bouger vont le faire, en utilisant eux même la méthode `move()` qui contient déjà toute la logique de déplacement (directions, contrôle des cases...). Dans les paramètres de `move()` type donc plutot avec `Movable` que `Fighter` (et renomme `$fighter` en `$movable`), afin de s'assurer justement que le mouvement puisse s'effectuer.
 
@@ -78,15 +78,15 @@ Dans le fichier *index.php*, modifie l'instanciation d'un `Monster` par un `Hind
 
 > Tu peux reset la partie, tu devrais voir la biche bouger après chaque mouvement d'Héraclès.
 > Tu peux ajouter un Monster à la carte en plus de Hind. Puisqu'il n'implémente pas Movable, il devrait rester immobile !
-> Transforme ce Monster en une seconde biche, et là tu devrais avoir un soucis dans tes déplacements ? pourquoi ? 
+> Transforme ce Monster en une seconde biche, et là tu devrais avoir un soucis dans tes déplacements ? Pourquoi ? 
 
 5. Ici, `move()` est lancée par le Hero une première fois, puis autant de fois qu'il y a de monstres qui peuvent bouger. Donc à chaque mouvement d'un monstre, une nouvelle boucle est effectuée sur les monstres, *etc.* entraînant un comportement anormal. Pour éviter cela, il faut s'assurer que la boucle sur les monstres se fasse uniquement dans le cas où c'est une instance de `Hero` qui est déplacée. 
 
-> Reset et teste à nouveau. Cette fois ci les deux bîches se déplacent bien indépendamment les unes des autres. Tu peux retirer la seconde biche qui n'est plus nécessaire. 
+> Reset et teste à nouveau. Cette fois ci les deux biches se déplacent bien indépendamment les unes des autres. Tu peux retirer la seconde biche qui n'est plus nécessaire. 
 
 ## Cache cache 
 
-Dernier point, notre biche bouge mais est bloquée derrière les buissons. Modifions cela. Si Héraclès ne sait comment traverser les épineux buissons de la forêt, cela n'est pas un problème pour la biche. Nous allons donc faire en sorte que la tuile Bush soit non traversable, **sauf** pour une bîche ! 
+Dernier point, notre biche bouge mais est bloquée derrière les buissons. Modifions cela. Si Héraclès ne sait comment traverser les épineux buissons de la forêt, cela n'est pas un problème pour la biche. Nous allons donc faire en sorte que la tuile Bush soit non traversable, **sauf** pour une biche ! 
 
 Pour cela, modifie la méthode `getIsCrossable()` de Tile, pour qu'elle prenne en paramètre une instance de `Movable`. Dans `Arena`, lorsque tu utilise `getIsCrossable()`, passe en paramètre ce qui est en train d'essayer de bouger sur cette tuile.
 
