@@ -41,7 +41,7 @@ Dans la classe `Water`, passe `$isCrossable` à *false*;
 Maintenant, tu vas modifier légèrement le comportement de la méthode `move()` d'`Arena` pour qu'Héraclès ne puisse pas se déplacer sur une tuile qui ne l'autoriserait pas.
 1. Commence par créer une méthode privée `getTile($x, $y)` permettant de récupérer une tuile en fonction de ses coordonéés (ou null si la case est vide).
 2. Dans `move()`, récupère la tuile correspondant à la destination potentielle du héros.
-3. Vérifie que la tuile est traversable grace à la nouvelle propriété `$isCrossable`.
+3. Vérifie que la tuile est traversable grace notamment à la nouvelle propriété `$isCrossable`.
 4. Si non lance une exception, si oui, le déplacement continue.
 
 Teste sur la carte que le héros peut bien traverser l'herbe mais pas l'eau.
@@ -72,15 +72,15 @@ Dans le fichier *index.php*, modifie l'instanciation d'un `Monster` par un `Hind
 
 2. À chaque fois que le héros a fini de bouger, les monstres ayant la capacité de bouger vont le faire, en utilisant eux même la méthode `move()` qui contient déjà toute la logique de déplacement (directions, contrôle des cases...). Dans les paramètres de `move()` type donc plutot avec `Movable` que `Fighter` (et renomme `$fighter` en `$movable`), afin de s'assurer justement que le mouvement puisse s'effectuer.
 
-3. Dans la méthode `move()`, une fois le héros déplacé (donc après l'utilisation de `setX()` et `setY()`), boucle sur les monstres implémentant `Movable`. 
+3. Dans la méthode `move()`, une fois le héros déplacé (donc après l'utilisation de `setX()` et `setY()`), boucle sur les monstres implémentant `Movable` (HINT : pour un objet donné, tu peux utiliser `instanceof` aussi bien sur son nom de classe, une classe parente qu'il étend ou une interface qu'il implémente). 
 
 4. Pour chacun de ces monstres (donc à chaque tour de boucle), choisis une direction aléatoirement (HINT : appuie toi sur la fonction PHP `array_rand()` et sur la constante `DIRECTIONS`), puis bouge le monstre dans cette direction en réutilisant la méthode `move()`.
 
 > Tu peux reset la partie, tu devrais voir la biche bouger après chaque mouvement d'Héraclès.
 > Tu peux ajouter un Monster à la carte en plus de Hind. Puisqu'il n'implémente pas Movable, il devrait rester immobile !
-> Transforme ce Monster en une seconde biche, et là tu devrais avoir un soucis dans tes déplacements ? Pourquoi ? 
+> Transforme ce Monster en une seconde biche, et là tu devrais avoir un soucis dans tes déplacements (seule la première biche bouge de plusieurs cases et pas la seconde) ? Pourquoi ? 
 
-5. Ici, `move()` est lancée par le Hero une première fois, puis autant de fois qu'il y a de monstres qui peuvent bouger. Donc à chaque mouvement d'un monstre, une nouvelle boucle est effectuée sur les monstres, *etc.* entraînant un comportement anormal. Pour éviter cela, il faut s'assurer que la boucle sur les monstres se fasse uniquement dans le cas où c'est une instance de `Hero` qui est déplacée. 
+5. Ici, `move()` est lancée par le Hero une première fois, puis autant de fois qu'il y a de monstres qui peuvent bouger. Donc à chaque mouvement d'un monstre, une nouvelle boucle est effectuée sur les monstres. Le premier monstre de la boucle est toujours le même et se redéplace donc indéfiniment, ou tout du moins jusqu'à ce qu'une exception soit levée (ce qui arrive assez vite). Pour éviter cela, il faut s'assurer que la boucle sur les monstres se fasse uniquement dans le cas où c'est une instance de `Hero` qui est déplacée. 
 
 > Reset et teste à nouveau. Cette fois ci les deux biches se déplacent bien indépendamment les unes des autres. Tu peux retirer la seconde biche qui n'est plus nécessaire. 
 
