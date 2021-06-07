@@ -2,9 +2,6 @@
 
 namespace App;
 
-use App\Shield;
-use App\Weapon;
-
 class Hero extends Fighter
 {
     private ?Weapon $weapon = null;
