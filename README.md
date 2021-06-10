@@ -74,7 +74,7 @@ Dans le fichier *index.php*, modifie l'instanciation d'un `Monster` par un `Hind
 
 2. À chaque fois que le héros a fini de bouger, les monstres ayant la capacité de bouger vont le faire, en utilisant eux même la méthode `move()` qui contient déjà toute la logique de déplacement (directions, contrôle des cases...). Dans les paramètres de `move()` type donc plutot avec `Movable` que `Fighter` (et renomme `$fighter` en `$movable`), afin de s'assurer justement que le mouvement puisse s'effectuer.
 
-3. Le *gameplay* va être le suivant : le héros bouge puis, si son mouvement s'est bien effectué, tous les monstres qui en ont la capacité bougent à leur tour. Héros et monstres vont utiliser la même méthode `move()` pour gérer leur mouvement, afin de bénéficier des vérifications propres à tous les `Movable`. Pour gérer cela, créé une methode `arenaMove(string $destination)` et modifie dans *index.php* l'appel à `move()` par cette nouvelle méthode (attention, il y a un paramètre de moins).
+3. Le *gameplay* va être le suivant : le héros bouge puis, si son mouvement s'est bien effectué, tous les monstres qui en ont la capacité bougent à leur tour. Héros et monstres vont utiliser la même méthode `move()` pour gérer leur mouvement, afin de bénéficier des vérifications propres à tous les `Movable`. Pour gérer cela, créé une methode `arenaMove(string $destination)`, celle-ci sera prise en compte automatiquement dans *index.php* si elle existe.
 
 4. Dans la méthode `arenaMove()`, déplace le héros grace à `move()` (pour rappel dans Arena, tu le récuères via `$this->getHero()`).
 

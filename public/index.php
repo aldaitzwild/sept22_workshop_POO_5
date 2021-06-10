@@ -127,8 +127,12 @@ if (!$arena instanceof Arena) {
 $_SESSION['arena'] = $arena;
 
 try {
-    if (!empty($_GET['move']) && method_exists($arena, 'move')) {
-        $arena->move($arena->getHero(), $_GET['move']);
+    if (!empty($_GET['move'])) {
+        if(method_exists($arena, 'move')) {
+            $arena->move($arena->getHero(), $_GET['move']);
+        } elseif(method_exists($arena, 'arenaMove')) {
+            $arena->arenaMove($_GET['move']);
+        }
     }
     if (isset($_GET['fight']) && method_exists($arena, 'battle')) {
         $arena->battle($_GET['fight']);
