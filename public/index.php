@@ -12,7 +12,6 @@ use App\Hind;
 use App\Monster;
 use App\Water;
 
-/** ⛔ Ne pas modifier ⛔ **/
 session_start();
 
 if (!empty($_GET['reset'])) {
