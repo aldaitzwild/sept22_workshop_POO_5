@@ -20,7 +20,8 @@ Tu remarqueras que la classe `Fighter` possède également ces mêmes méthodes.
 
 > Rappel : une interface ne contient **que** des signatures de méthodes (pense au typages), tu ne dois donc mettre ni propriétés, ni "corps" pour les méthodes.
 
-Dans `Tile` ajoute un constructeur permettant de spécifier les coordonnées de la tuile en x et y au moment de l'instanciation. Mets également une chaîne vide par défaut pour `$image`;
+Dans `Tile` ajoute un constructeur avec deux paramètres, permettant de spécifier les coordonnées de la tuile en x et y au moment de l'instanciation. 
+Mets également une chaîne vide par défaut pour la propriété `$image`;
 
 Sur ta carte, tu vas avoir plusieurs type de tuiles représentant les différent éléments du paysage (herbe, eau...), chacune ayant ses propres spécifités (traversable ou non...). Tu ne seras jamais amené à instancier directement une classe `Tile`, mais toujours quelques chose de plus précis. Tu l'auras compris, nous avons affaire ici à une classe abstaite ! Modifie `Tile` en conséquence.
 
