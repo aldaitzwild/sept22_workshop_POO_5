@@ -17,11 +17,13 @@ class Arena
     private Hero $hero;
 
     private int $size = 10;
+    private array $tiles;
 
-    public function __construct(Hero $hero, array $monsters)
+    public function __construct(Hero $hero, array $monsters, array $tiles = [])
     {
         $this->hero = $hero;
         $this->monsters = $monsters;
+        $this->tiles = $tiles;
     }
 
     public function move(Fighter $fighter, string $direction)
@@ -44,6 +46,13 @@ class Arena
                 throw new Exception('Not free');
             }
         }
+
+        $tile = $this->getTile($destinationX, $destinationY);
+
+        if($tile && !$tile->isCrossable()) {
+            throw new Exception('Not Crossable at all!');
+        }
+        
 
         $fighter->setX($destinationX);
         $fighter->setY($destinationY);
@@ -121,5 +130,35 @@ class Arena
     public function getSize(): int
     {
         return $this->size;
+    }
+
+    /**
+     * Get the value of tiles
+     */ 
+    public function getTiles()
+    {
+        return $this->tiles;
+    }
+
+    /**
+     * Set the value of tiles
+     *
+     * @return  self
+     */ 
+    public function setTiles($tiles)
+    {
+        $this->tiles = $tiles;
+
+        return $this;
+    }
+
+    private function getTile(int $x, int $y) : ?Tile
+    {
+        foreach($this->tiles as $tile) {
+            if($tile->getX() == $x && $tile->getY() == $y)
+                return $tile;
+        }
+
+        return null;
     }
 }
